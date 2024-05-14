@@ -21,7 +21,10 @@ const DB_PWD = encodeURIComponent(process.env['DB_PWD']);
 
 
 // const uri = `mongodb+srv://${DB_USER}:${DB_PWD}@${DB_URL}/?retryWrites=true&w=majority`;
+
+//local
 const uri = `mongodb://127.0.0.1:27017`
+
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
