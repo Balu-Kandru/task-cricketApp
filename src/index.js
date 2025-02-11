@@ -12,20 +12,10 @@ const app = express();
 
 app.use(express.json());
 
-const port = process.env['SERVER_PORT'] || 3000;
-// please create a .env file place the credentials for connecting to atlas
-const DB_USER = process.env['DB_USER'];
-const DB_URL = process.env['DB_URL'];
-const DB_NAME = process.env['DB_NAME'] || "task-fantasyCricketApp";
-const DB_PWD = encodeURIComponent(process.env['DB_PWD']);
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017";
 
 
-// const uri = `mongodb+srv://${DB_USER}:${DB_PWD}@${DB_URL}/?retryWrites=true&w=majority`;
-
-//local
-const uri = `mongodb://127.0.0.1:27017`
-
-const client = new MongoClient(uri, {
+const client = new MongoClient(dbUrl, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -36,6 +26,7 @@ let db;
 async function connectToDB() {
   try {
     await client.connect();
+    console.log(dbUrl)
     console.log("You successfully connected to MongoDB!");
     await client.db("admin").command({ ping: 1 });
     db = client.db(DB_NAME);

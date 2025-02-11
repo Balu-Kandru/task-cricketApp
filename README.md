@@ -1,103 +1,128 @@
-## please read instructions.md
+## Fantasy Cricket API
 
-# TASK
+### Task
 
-Write a simple backend to accept team entries for a fantasy cricket app (similar to Dream11) and process the results based on match results. Use Node.js backend with express for API and MongoDB for database. Core packages are pre-installed with a dev database connection to MongoDB Atlas. You are free to add additional libraries for validation, etc.
+Developeed a **backend** for a fantasy cricket app using **Node.js** with **Express** and **MongoDB**.
 
+### Tech Stack
+- **Node.js with Express**
+- **MongoDB**
 
-## Tech Stack 
-- Node.js with Express
-- Database 
-  - MongoDB 
-  - DB Name: "task-"
-
+---
 
 ## Data
 
-Players: 
---
-- There are CSV and JSON files under data folder for players list
-- This contains list of all players in two teams (RR and CSK 2022)
-- This is the list from which players can be chosen for team entry 
+### Players
+- CSV and JSON files under the `data` folder contain a list of players for **RR** and **CSK** (2022).
+- These players can be selected for **team entries**.
 
-Match: 
---
-- There are CSV and JSON files under data folder for match result
-- This contains ball by ball results of the match (RR and CSK 2022)
-- This should be used for result generation and points calculation for team entries 
+### Match
+- CSV and JSON files under the `data` folder contain **ball-by-ball** results of the **RR vs CSK 2022** match.
+- These results should be used for **point calculation** and **team ranking**.
 
-
+---
 
 ## Rules
 
-Every cricket team entry must have 11 players
-A maximum of 10 players can be selected from any one of the teams
+### Team Selection
+- A **team must have 11 players**.
+- A **maximum of 10 players** can be selected from any **one team**.
 
-Min & Max Players in a team
---
-Player 				    Type	Min	Max
-Wicket Keeper 	 	WK		1	  8
-Batter	 			    BAT		1	  8
-All Rounder			  AR		1	  8
-Bowler				    BWL		1	  8
+| Player Type      | Min | Max |
+|-----------------|-----|-----|
+| Wicket Keeper (WK)  | 1   | 8   |
+| Batter (BAT)        | 1   | 8   |
+| All-Rounder (AR)    | 1   | 8   |
+| Bowler (BWL)        | 1   | 8   |
 
-Once you have selected your 11 players, you will have to assign a captain and vice-captain for your team
-The captain will give you 2x points scored by them in the actual match.
-The vice-captain will give you 1.5x points scored by them in the actual match.
+- **Captain:** Scores **2x** their match points.
+- **Vice-Captain:** Scores **1.5x** their match points.
 
-Batting Points
---
-Run						        +1
-Boundary Bonus			  +1
-Six Bonus				      +2
-30 Run Bonus			    +4
-Half-century Bonus	  +8
-Century Bonus			    +16
-Dismissal for a duck 	-2 (Batter, Wicket-Keeper & All-Rounder only)
+### Scoring System
 
+#### Batting Points
+| Event | Points |
+|--------|---------|
+| Run | +1 |
+| Boundary Bonus | +1 |
+| Six Bonus | +2 |
+| 30 Run Bonus | +4 |
+| Half-century Bonus | +8 |
+| Century Bonus | +16 |
+| Dismissal for a Duck (BAT, WK, AR) | -2 |
 
-Bowling Points
---
-Wicket (Excluding Run Out)	+25
-Bonus (LBW / Bowled)		    +8
-3 Wicket Bonus				      +4
-4 Wicket Bonus				      +8
-5 Wicket Bonus				      +16
-Maiden Over					        +12
+#### Bowling Points
+| Event | Points |
+|--------|---------|
+| Wicket (Excl. Run Out) | +25 |
+| Bonus (LBW/Bowled) | +8 |
+| 3 Wicket Bonus | +4 |
+| 4 Wicket Bonus | +8 |
+| 5 Wicket Bonus | +16 |
+| Maiden Over | +12 |
 
+#### Fielding Points
+| Event | Points |
+|--------|---------|
+| Catch | +8 |
+| 3 Catch Bonus | +4 |
+| Stumping | +12 |
+| Run Out | +6 |
 
-Fielding Points
---
-Catch						    +8
-3 Catch Bonus				+4
-Stumping					  +12
-Run out 	          +6
-
-
-
+---
 
 ## Endpoints
 
-### Add Team Entry "/add-team"
-- App users can use this endpoint to submit new team entries
-- Validate for player selection rules as above
-- Input Parameters:
-  - Your Team Name (required)
-  - Players [] (required, list of player names)
-  - Captain (required, player name) 
-  - vice-captain (required, player name)
+### 1️⃣ Add Team Entry - `/add-team` (POST)
+- Submit a new team entry.
+- Validate **player selection rules**.
+
+```bash
+POST http://localhost:3000/add-team
+```
+#### Request Payload:
+```json
+{
+    "teamName": "yellow-team",
+    "players": ["SO Hetmyer", "Ravindra Jadeja", "Deepak Chahar"],
+    "captain": "MS Dhoni",
+    "viceCaptain": "SV Samson"
+}
+```
+
+### 2️⃣ Process Match Result - `/process-result` (POST)
+- Calculate points for players based on **match.json** results.
+- Assign scores to teams accordingly.
+- **No input parameters** required.
+
+```bash
+POST http://localhost:3000/process-result
 
 
-### Process Match Result "/process-result"
-  - Run this endpoint to process match result
-  - This should calculate points for the players and assign it to the team entries with those players
-  - Input Parameters:
-    - None, the resuls will be processed using data/match.json for CSKvRR 2022
+### 3️⃣ View Team Results - `/team-result` (GET)
+- Get a **list of all team entries** with their calculated points.
+- Show the **winner** (or multiple winners if tied).
+- **No input parameters** required.
 
+```bash
+GET http://localhost:3000/team-result
+```
 
-### View Teams Results "/team-result"
-  - To view the list of team entries with thier scored points and the team's total points
-  - The top team with maximum points should be shown as winner
-  - If multiple teams have the top score, show all the winning teams
-  - Input Parameters:
-    - None, show results for CSKvRR 2022
+---
+
+## Development
+
+### Run in Watch Mode
+```bash
+npm run dev
+```
+
+### Database Connection (MongoDB Atlas)
+Create a `.env` file with:
+```env
+DB_USER=
+DB_PWD=
+DB_URL=
+DB_NAME=task-fantasyCricketApp
+SERVER_PORT=3000
+```
