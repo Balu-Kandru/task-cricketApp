@@ -2,7 +2,7 @@
 
 ### Task
 
-Developeed a **backend** for a fantasy cricket app using **Node.js** with **Express** and **MongoDB**.
+Developed a **backend** for a fantasy cricket app using **Node.js** with **Express** and **MongoDB**.
 
 ### Tech Stack
 - **Node.js with Express**
